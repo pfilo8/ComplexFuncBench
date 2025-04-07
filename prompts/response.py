@@ -50,14 +50,16 @@ output:
 
 # User prompt
 complete_user_prompt = SimpleTemplatePrompt(
-    template=("""input:
+    template=(
+        """input:
 query: [args1]
 response: [args2]
 
 output:\n    
 """
-), args_order=["query", "gen_response"])
-
+    ),
+    args_order=["query", "gen_response"],
+)
 
 
 """
@@ -98,8 +100,11 @@ output:
 
 # User prompt
 correct_user_prompt = SimpleTemplatePrompt(
-    template=("""dialogue history: [args1]
+    template=(
+        """dialogue history: [args1]
 response: [args2]
 output:\n
 """
-), args_order=["history", "gen_response"])
+    ),
+    args_order=["history", "gen_response"],
+)

@@ -1,29 +1,30 @@
 import json
-import re
 import time
 import traceback
-import logging
 
 
 def load_json(dir_path):
-    if dir_path.endswith('.json'):
-        return json.load(open(dir_path, 'r'))
-    elif dir_path.endswith('.jsonl'):
-        return [json.loads(line) for line in open(dir_path, 'r')]
+    if dir_path.endswith(".json"):
+        return json.load(open(dir_path, "r"))
+    elif dir_path.endswith(".jsonl"):
+        return [json.loads(line) for line in open(dir_path, "r")]
 
 
 def save_json(data, dir_path):
-    if dir_path.endswith('.json'):
-        with open(dir_path, 'w') as f:
+    if dir_path.endswith(".json"):
+        with open(dir_path, "w") as f:
             json.dump(data, f, ensure_ascii=False, indent=4)
     elif dir_path.endswith(".jsonl"):
-        with open(dir_path, 'w') as f:
+        with open(dir_path, "w") as f:
             for line in data:
                 f.write(json.dumps(line, ensure_ascii=False) + "\n")
 
+
 def decode_json(json_str):
-    json_str = json_str.strip('```JSON\n').strip('```json\n').strip('\n```')
-    json_str = json_str.replace('\n', '').replace('False', 'false').replace('True', 'true')
+    json_str = json_str.strip("```JSON\n").strip("```json\n").strip("\n```")
+    json_str = (
+        json_str.replace("\n", "").replace("False", "false").replace("True", "true")
+    )
     try:
         return json.loads(json_str)
     except:
@@ -38,7 +39,8 @@ def exception_handler(func):
             print(f"An error occurred in {func.__name__}: {e}")
             tb = traceback.format_exc()
             print(f"Traceback:\n{tb}")
-            return None  
+            return None
+
     return wrapper
 
 
@@ -48,10 +50,13 @@ def apply_decorator_to_all_methods(decorator):
             if callable(getattr(cls, attr)) and not attr.startswith("__"):
                 setattr(cls, attr, decorator(getattr(cls, attr)))
         return cls
+
     return class_decorator
 
 
 from functools import wraps
+
+
 def retry(max_attempts=5, delay=2):
     def decorator(func):
         @wraps(func)
@@ -65,5 +70,7 @@ def retry(max_attempts=5, delay=2):
                 print(f"Attempt {attempt}/{max_attempts} failed.")
                 time.sleep(delay)
             return response
+
         return wrapper
+
     return decorator

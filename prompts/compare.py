@@ -32,7 +32,8 @@ Note: The output must be a valid JSON format that can be properly loaded.
 
 # User prompt
 user_prompt = SimpleTemplatePrompt(
-    template=("""Function list:
+    template=(
+        """Function list:
 ```JSON
 [args1]
 ```
@@ -51,4 +52,6 @@ Function call 2:
 Please determine whether Function call 1 and Function call 2 are equivalent and provide your reason.
 output:\n
 """
-), args_order=["functions", "history", "function_call_1", "function_call_2"])
+    ),
+    args_order=["functions", "history", "function_call_1", "function_call_2"],
+)

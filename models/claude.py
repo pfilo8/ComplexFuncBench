@@ -1,15 +1,15 @@
-from typing import Any, Dict
+from typing import Any
 import os
 from anthropic import Anthropic
 import copy
 import json
 import sys
-import os
-from urllib.parse import unquote
+
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from prompts.prompts import SimpleTemplatePrompt
 from utils.utils import *
+
 
 class ClaudeModel:
     def __init__(self, model_name):
@@ -29,15 +29,16 @@ class ClaudeModel:
                 model=self.model_name,
                 messages=[
                     {"role": "system", "content": prefix},
-                    {"role": "user", "content": query}
+                    {"role": "user", "content": query},
                 ],
                 temperature=0.0,
-                do_sample=False
+                do_sample=False,
             )
             return completion.choices[0].message.content
         except Exception as e:
             print(f"Exception: {e}")
             return None
+
 
 class FunctionCallClaude(ClaudeModel):
     def __init__(self, model_name):
@@ -54,14 +55,17 @@ class FunctionCallClaude(ClaudeModel):
                 temperature=0.0,
                 tools=tools,
                 max_tokens=2048,
-                tool_choice={"type": "auto"}
+                tool_choice={"type": "auto"},
             )
             return response
         except Exception as e:
             print(f"Exception: {e}")
             return None
 
+
 if __name__ == "__main__":
     model = ClaudeModel("claude-3-5-sonnet-20240620")
-    response_message = model._predict("You are a helpful assistant.", query="What is the capital of France?")
+    response_message = model._predict(
+        "You are a helpful assistant.", query="What is the capital of France?"
+    )
     print(response_message)

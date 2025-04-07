@@ -1,13 +1,12 @@
-from typing import Any, Dict
+from typing import Any
 import os
 from openai import OpenAI
 import json
 import sys
 import copy
-import os
+
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from prompts.prompts import SimpleTemplatePrompt
 from utils.utils import *
 
 
@@ -17,10 +16,8 @@ class LlamaModel:
         self.temperature = 0.95
         self.model_name = model_name
         self.url = url
-        self.client = OpenAI(
-            api_key="EMPTY",
-            base_url=self.url)
-        
+        self.client = OpenAI(api_key="EMPTY", base_url=self.url)
+
         self.messages = []
 
     def _format_prompt(self, messages, function):
@@ -36,7 +33,9 @@ class LlamaModel:
         formatted_prompt += "Cutting Knowledge Date: December 2023\n"
         formatted_prompt += "Today Date: 23 Jul 2024\n\n"
         formatted_prompt += "When you receive a tool call response, use the output to format an answer to the orginal user question.\n\n"
-        formatted_prompt += "You are a helpful assistant with tool calling capabilities."
+        formatted_prompt += (
+            "You are a helpful assistant with tool calling capabilities."
+        )
         formatted_prompt += system_message + "<|eot_id|>\n"
 
         # Llama pass in custom tools in first user message
@@ -65,7 +64,6 @@ class LlamaModel:
         formatted_prompt += "\n<|start_header_id|>assistant<|end_header_id|>\n\n"
 
         return formatted_prompt
-    
 
     @retry(max_attempts=5)
     def __call__(self, messages, tools=None, **kwargs: Any):
@@ -74,10 +72,7 @@ class LlamaModel:
         prompt = self._format_prompt(self.messages, tools)
         try:
             completion = self.client.completions.create(
-                model=self.model_name,
-                prompt=prompt,
-                temperature=0.0,
-                max_tokens=4096
+                model=self.model_name, prompt=prompt, temperature=0.0, max_tokens=4096
             )
             return completion.choices[0].text
         except Exception as e:
