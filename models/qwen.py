@@ -1,6 +1,6 @@
 import os
 import copy
-from typing import Any, Dict
+from typing import Any
 from utils.utils import *
 from openai import OpenAI
 
@@ -13,13 +13,15 @@ Note: Tool support has been available in vllm since v0.6.0. Be sure to install a
 Reference: https://qwen.readthedocs.io/en/latest/framework/function_call.html#vllm
 """
 
+
 class QwenModel:
     def __init__(self, model_name):
         self.model_name = model_name
         self.messages = []
         self.client = OpenAI(
-            api_key=os.getenv("Qwen_aliyuncs_KEY"), 
-            base_url="https://dashscope.aliyuncs.com/compatible-mode/v1")
+            api_key=os.getenv("Qwen_aliyuncs_KEY"),
+            base_url="https://dashscope.aliyuncs.com/compatible-mode/v1",
+        )
 
     @retry(max_attempts=5, delay=20)
     def __call__(self, messages, tools=None, **kwargs: Any):
@@ -32,9 +34,9 @@ class QwenModel:
                 temperature=0.0,
                 tools=tools,
                 tool_choice="auto",
-                max_tokens=2048
+                max_tokens=2048,
             )
-            return completion.model_dump()['choices'][0]['message']
+            return completion.model_dump()["choices"][0]["message"]
         except Exception as e:
             print(f"Exception: {e}")
             return None
